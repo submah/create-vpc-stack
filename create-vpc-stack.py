@@ -2,7 +2,8 @@ import boto3
 
 ec2 = boto3.resource('ec2', aws_access_key_id='PROVICE-YOUR-ACCESS_KEY',
                      aws_secret_access_key='PROVIDE-YOUR-SECRET_ACCESS_KEY',
-                     region_name='REGION-ID')
+                     region_name='us-east-1')
+
 
 # create VPC
 vpc = ec2.create_vpc(CidrBlock='90.0.0.0/16')
@@ -28,28 +29,28 @@ print('Public Routetable ID is: ', route_table.id)
 
 # create Pulblic subnets
 public_subnet1 = ec2.create_subnet(
-    AvailabilityZone='us-east-1a', 
-    CidrBlock='90.0.1.0/24', 
+    AvailabilityZone='us-east-1a',
+    CidrBlock='90.0.1.0/24',
     VpcId=vpc.id)
 print('Public_subnet1 ID is: ', public_subnet1.id)
 
 
 public_subnet2 = ec2.create_subnet(
-    AvailabilityZone='us-east-1b', 
-    CidrBlock='90.0.3.0/24', 
+    AvailabilityZone='us-east-1b',
+    CidrBlock='90.0.3.0/24',
     VpcId=vpc.id)
 print('Public_subnet2 ID is: ', public_subnet2.id)
 
 #create Private subnets
 private_subnet1 = ec2.create_subnet(
-    AvailabilityZone='us-east-1a', 
-    CidrBlock='90.0.2.0/24', 
+    AvailabilityZone='us-east-1a',
+    CidrBlock='90.0.2.0/24',
     VpcId=vpc.id)
 print('Private_subnet1 ID is: ', private_subnet1.id)
 
 private_subnet2 = ec2.create_subnet(
-    AvailabilityZone='us-east-1b', 
-    CidrBlock='90.0.4.0/24', 
+    AvailabilityZone='us-east-1b',
+    CidrBlock='90.0.4.0/24',
     VpcId=vpc.id)
 print('Private_subnet2 ID is: ', private_subnet2.id)
 
@@ -57,24 +58,31 @@ print('Private_subnet2 ID is: ', private_subnet2.id)
 #Tag the subnets
 public_subnet1.create_tags(
     Tags=[
-            {'Key': 'Name',
-            'Value': 'vpc-a-public-subnet'
+            {
+                'Key': 'Name',
+                'Value': 'vpc-a-public-subnet'
             }
-        ])
+        ]
+    )
 
 public_subnet2.create_tags(
     Tags=[
-            {'Key': 'Name',
-            'Value': 'vpc-a-public-subnet'
+            {
+                'Key': 'Name',
+                'Value': 'vpc-a-public-subnet'
             }
-        ])
+        ]
+    )
+
 
 private_subnet1.create_tags(
     Tags=[
-            {'Key': 'Name','
-            Value': 'vpc-a-private-subnet'
+            {
+                'Key': 'Name',
+                'Value': 'vpc-a-private-subnet'
             }
-        ])
+        ]
+    )
 
 private_subnet2.create_tags(Tags=[{'Key': 'Name','Value': 'vpc-a-private-subnet'}])
 
@@ -90,9 +98,12 @@ print('public_route_table ID is: ', public_route_table.id)
 #tag the public_route_table
 public_route_table.create_tags(
     Tags=[
-            {'Key': 'Name',
-            'Value': 'vpc-a-public-rt'}
-        ])
+            {
+                'Key': 'Name',
+                'Value': 'vpc-a-public-rt'
+            }
+        ]
+    )
 
 # create a route table and a private route
 private_route_table = vpc.create_route_table()
@@ -101,9 +112,12 @@ print('public_route_table ID is: ', private_route_table.id)
 #tag the public_route_table
 private_route_table.create_tags(
     Tags=[
-            {'Key': 'Name',
-            'Value': 'vpc-a-private-rt'}
-        ])
+            {
+                'Key': 'Name',
+                'Value': 'vpc-a-private-rt'
+            }
+        ]
+    )
 
 
 # associate the public routetable to public subnet
@@ -116,24 +130,27 @@ private_route_table.associate_with_subnet(SubnetId=private_subnet2.id)
 
 # Create public security group
 public_sec_group = ec2.create_security_group(
-    GroupName='vpc-a-public-sg', 
-    Description='vpc-a-public-sg', 
+    GroupName='vpc-a-public-sg',
+    Description='vpc-a-public-sg',
     VpcId=vpc.id)
 
 print('public_sec_group ID is: ', public_sec_group.id)
 
 
 public_sec_group.authorize_ingress(
-    CidrIp='0.0.0.0/0', 
-    IpProtocol='tcp', 
-    FromPort=22, 
+    CidrIp='0.0.0.0/0',
+    IpProtocol='tcp',
+    FromPort=22,
     ToPort=22)
 
 public_sec_group.create_tags(
     Tags=[
-            {'Key': 'Name',
-            'Value': 'vpc-a-public-sg'}
-        ])
+            {
+                'Key': 'Name',
+                'Value': 'vpc-a-public-sg'
+            }
+        ]
+    )
 
 # Create private security group
 private_sec_group = ec2.create_security_group(GroupName='vpc-a-private-sg', Description='vpc-a-private-sg', VpcId=vpc.id)
@@ -142,6 +159,9 @@ print('private_sec_group ID is: ', private_sec_group.id)
 private_sec_group.authorize_ingress(CidrIp='0.0.0.0/0', IpProtocol='tcp', FromPort=22, ToPort=22)
 private_sec_group.create_tags(
     Tags=[
-            {'Key': 'Name',
-            'Value': 'vpc-a-private-sg'}
-        ])
+            {
+                'Key': 'Name',
+                'Value': 'vpc-a-private-sg'
+            }
+        ]
+    )
